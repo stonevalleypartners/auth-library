@@ -1,0 +1,18 @@
+{
+  "node": true,
+  "mocha": true,
+  "indent": 2,
+  "newcap": true,
+  "quotmark": "single",
+  "undef": true,
+  "lastsemic": true,
+  "eqeqeq": true,
+  "esnext": true,
+  "expr": true,
+  "asi": true,
+  "unused": true,
+  "eqnull": true,
+  "globals"      : {
+    "Promise"   : true
+  }
+}
