@@ -1,0 +1,40 @@
+{
+  "name": "auth-library",
+  "version": "1.0.0",
+  "description": "SVP authentication library",
+  "main": "lib/index.js",
+  "scripts": {
+    "pretest": "jshint .",
+    "test": "istanbul cover node_modules/.bin/_mocha -- -R spec test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stonevalleypartners/auth-library.git"
+  },
+  "author": "Stone Valley Partners",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/stonevalleypartners/auth-library/issues"
+  },
+  "homepage": "https://github.com/stonevalleypartners/auth-library#readme",
+  "devDependencies": {
+    "bunyan": "^1.5.1",
+    "chai": "^3.2.0",
+    "chai-as-promised": "^5.1.0",
+    "esdoc": "^0.2.6",
+    "istanbul": "^0.3.22",
+    "jshint": "^2.8.0",
+    "mocha": "^2.3.3",
+    "svp-portfinder": "git+https://github.com/stonevalleypartners/svp-portfinder.git",
+    "svp-reststub": "git+https://github.com/stonevalleypartners/svp-reststub.git"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.2.1",
+    "body-parser": "^1.14.0",
+    "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "passport": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "request-promise": "^0.4.3"
+  }
+}
