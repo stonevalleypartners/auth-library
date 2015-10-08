@@ -3,6 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var http = require('http');
 var request = require('request-promise');
+var lolex = require('lolex');
 
 var chai = require('chai');
 chai.use(require('chai-as-promised'));
@@ -70,6 +71,39 @@ describe('bearer', () => {
         log.error({data: data}, 'private api response');
         var body = JSON.parse(data);
         body.should.have.deep.property('user.id', 123);
+      });
+  });
+
+  it('bad token is denied', () => {
+    var reqOpts = {
+      uri: url + '/private',
+      auth: {'bearer': bearer + 'foo'},
+      simple: false,
+      resolveWithFullResponse: true,
+    };
+    return request(reqOpts)
+      .then((data) => {
+        log.error({data: data}, 'private api response - bad token');
+        data.should.have.property('statusCode', 401);
+        data.should.have.property('body', 'Unauthorized');
+      });
+  });
+
+  it('expired token is denied', () => {
+    // fast forward one hour + 1ms, using lolex
+    var clock = lolex.install(Date.now() + 3600*1000 + 1);
+    var reqOpts = {
+      uri: url + '/private',
+      auth: {'bearer': bearer},
+      simple: false,
+      resolveWithFullResponse: true,
+    };
+    return request(reqOpts)
+      .then((data) => {
+        log.error({data: data}, 'private api response - bad token');
+        data.should.have.property('statusCode', 401);
+        data.should.have.property('body', 'Unauthorized');
+        clock.uninstall();
       });
   });
 });

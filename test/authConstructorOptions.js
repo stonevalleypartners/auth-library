@@ -1,5 +1,6 @@
 var lodash = require('lodash');
-var Auth = require('../lib').Auth;
+var AuthLib = require('../lib');
+var Auth = AuthLib.Auth;
 
 var chai = require('chai');
 chai.use(require('chai-as-promised'));
@@ -57,6 +58,13 @@ describe('auth constructor options', () => {
   for (var field of requiredFields) {
     testMissingField(field);
   }
+
+  it('test Login ADT cannot verify', () => {
+    var a = new Auth(allOpts);
+    var login = new AuthLib.Logins.abstract('login', a);
+    return login.verify()
+      .should.eventually.be.rejectedWith('Subclass must override verify() method');
+  });
 });
 
 function testMissingField(field) {

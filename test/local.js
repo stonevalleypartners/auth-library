@@ -115,6 +115,39 @@ describe('Local', () => {
       .should.eventually.be.rejected;
   });
 
+  it('login valid user by email', () => {
+    var reqOpts = {
+      uri: url + '/auth/local/verify',
+      method: 'post',
+      json: {email: 'bar@svp', password: 'sekret'}
+    };
+    log.error({data: reqOpts}, 'request opts');
+    return request(reqOpts)
+      .then((data) => {
+        log.info({token: data}, 'local login user by id string');
+        data.should.have.property('access_token');
+        data.should.have.property('token_type', 'bearer');
+        data.should.have.property('expires_in', 3600);
+        data.should.have.property('id', 'abc');
+      });
+  });
+
+  it('login user with missing credentials', () => {
+    var reqOpts = {
+      uri: url + '/auth/local/verify',
+      method: 'post',
+      json: {password: 'wrongpass'},
+      simple: false,
+      resolveWithFullResponse: true,
+    };
+    return request(reqOpts)
+      .then((data) => {
+        log.debug({body: data}, 'login user with missing credentials');
+        data.should.have.property('statusCode', 400);
+        data.should.have.deep.property('body.message', 'id or email field required');
+      });
+  });
+
   after(() => {
     server.close();
   });
