@@ -11,13 +11,19 @@ class UserStore {
     // remove the user if it's already in the array
     this.removeUser(obj.id);
 
-    // hash password
-    return auth.getHashedPassword(obj.password)
-      .then((hash) => {
-        // add user
-        obj.password = hash;
-        this.users.push(obj);
-      });
+    // if user contains a password; replace with the hashed version
+    if(obj.password) {
+      return auth.getHashedPassword(obj.password)
+        .then((hash) => {
+          // add user
+          obj.password = hash;
+          this.users.push(obj);
+        });
+    }
+
+    // otherwise; probable social-login-only user... store info
+    this.users.push(obj);
+    return Promise.resolve();
   }
 
   removeUser(id) {
