@@ -25,10 +25,4 @@ describe('AuthLib', () => {
     log.info({token: token}, 'bearer token');
   });
 
-  it('hashed password', () => {
-    return authLib.getHashedPassword('secret')
-      .then((hash) => {
-        log.info({hash: hash}, 'hashed password');
-      });
-  });
 });
