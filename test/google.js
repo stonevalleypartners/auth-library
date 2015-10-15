@@ -192,4 +192,50 @@ describe('google', () => {
     userInfo = lodash.extend(userInfo, userOverrides);
     stub.setResponse('userInfo', '/oauth2/v1/userinfo', userInfo);
   }
+
+  it('login new google user', () => {
+    setGoogleAuthStubs('5678', '123456', {});
+    var reqOpts = {
+      uri: serviceUrl + '/auth/google/verify',
+      method: 'post',
+      json: {accessToken: 'foo'}
+    };
+    return request(reqOpts)
+      .then((data) => {
+        log.info({data: data}, 'google login');
+        data.should.have.property('access_token');
+        data.should.have.property('token_type', 'bearer');
+        data.should.have.property('expires_in', 3600);
+        data.should.have.property('id', 'google:5678');
+        return users.lookupAccount({id: data.id});
+      })
+      .then((user) => {
+        log.info({user: user}, 'found google login user');
+        user.should.have.deep.property('social.picture', 'http://example.com/image/5678.jpg');
+        user.should.have.deep.property('social.email', 'doe@example.com');
+      });
+  });
+
+  it('new user only registered when function defined', () => {
+    // temporarily modify auth configuration options
+    var register = auth.opts.registerExternalAccount;
+    delete auth.opts.registerExternalAccount;
+
+    setGoogleAuthStubs('9012', '123456', {});
+    var reqOpts = {
+      uri: serviceUrl + '/auth/google/verify',
+      method: 'post',
+      json: {accessToken: 'foo'},
+      simple: false,
+      resolveWithFullResponse: true
+    };
+    return request(reqOpts)
+      .then((res) => {
+        res.statusCode.should.equal(401);
+        res.should.have.deep.property('body.message', 'Unauthorized');
+
+        // undo modification of auth configuration options
+        auth.opts.registerExternalAccount = register;
+      });
+  });
 });

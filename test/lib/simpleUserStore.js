@@ -49,18 +49,22 @@ class UserStore {
     return Promise.resolve(lodash.find(this.users, field));
   }
 
-  updateAccount(user, update) {
-    this.lookupAccount({id: user.id})
-      .then((u) => {
-        lodash.extend(u, update);
-      });
+  registerExternalAccount(accountInfo) {
+    var key = Object.keys(accountInfo)[0];
+    var obj = {
+      name: accountInfo[key].name,
+      id: key + ':' + accountInfo[key].id
+    };
+    var u = new SimpleUser(obj);
+    this.users.push(u);
+    return Promise.resolve(u);
   }
 
   createAuthLibOpts() {
     return {
       lookupAccount: this.lookupAccount.bind(this),
+      registerExternalAccount: this.registerExternalAccount.bind(this),
       updateTokens: lodash.noop,
-      updateAccount: this.updateAccount.bind(this),
     };
   }
 }

@@ -15,7 +15,6 @@ describe('AuthLib', () => {
       secret: 'testAuthLib',
       lookupAccount: lodash.noop,
       updateTokens: lodash.noop,
-      updateAccount: lodash.noop,
     };
     authLib = new AuthLib.Auth(opts);
   });

@@ -16,7 +16,6 @@ var allOpts = {
   lookupAccount: lodash.noop,
   registerExternalAccount: lodash.noop,
   updateTokens: lodash.noop,
-  updateAccount: lodash.noop,
 };
 
 describe('auth constructor options', () => {
@@ -44,17 +43,7 @@ describe('auth constructor options', () => {
     a.opts.maxRefreshTokens.should.equal(5);
   });
 
-  it('invalid construction missing secret', () => {
-    var opts = lodash.clone(allOpts);
-    delete opts.secret;
-
-    return new Promise((resolve) => {
-      resolve(new Auth(opts));
-    })
-    .should.eventually.be.rejectedWith('opts.secret required');
-  });
-
-  var requiredFields = ['log', 'secret', 'lookupAccount', 'updateTokens', 'updateAccount'];
+  var requiredFields = ['log', 'secret', 'lookupAccount', 'updateTokens'];
   for (var field of requiredFields) {
     testMissingField(field);
   }
