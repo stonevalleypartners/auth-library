@@ -44,7 +44,7 @@ describe('bearer', () => {
           server.on('error', reject);
         });
       });
-    var setupUser = users.addUser(auth, {id: 123, password: 'secret2', email: 'foo@svp.com'});
+    var setupUser = users.addUser({id: 123, password: 'secret2', email: 'foo@svp.com'});
     return Promise.all([setupServer, setupUser]);
   });
 

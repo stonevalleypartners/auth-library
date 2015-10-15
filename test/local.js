@@ -41,9 +41,9 @@ describe('Local', () => {
   });
 
   it('initialize users', () => {
-    return users.addUser(auth, {id: 123, password: 'secret', email: 'foo@svp'})
+    return users.addUser({id: 123, password: 'secret', email: 'foo@svp'})
       .then(() => {
-        return users.addUser(auth, {id: 'abc', password: 'sekret', email: 'bar@svp'});
+        return users.addUser({id: 'abc', password: 'sekret', email: 'bar@svp'});
       });
   });
 

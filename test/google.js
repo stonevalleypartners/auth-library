@@ -56,7 +56,7 @@ describe('google', () => {
           name: 'Jane Doe',
           email: 'doe@example.com'
         };
-        var initUser = users.addUser(auth, user);
+        var initUser = users.addUser(user);
 
         return Promise.all([startServer, initUser]);
       });
@@ -80,8 +80,8 @@ describe('google', () => {
       })
       .then((user) => {
         log.info({user: user}, 'found google login user');
-        user.should.have.property('picture', 'http://example.com/image/1234.jpg');
-        user.should.have.property('email', 'doe@example.com');
+        user.should.have.deep.property('social.picture', 'http://example.com/image/1234.jpg');
+        user.should.have.deep.property('social.email', 'doe@example.com');
       });
   });
 
@@ -107,8 +107,8 @@ describe('google', () => {
         return users.lookupAccount({id: data.id});
       })
       .then((user) => {
-        user.should.have.property('name', 'John Doe');
-        user.should.have.property('email', 'john@example.com');
+        user.should.have.deep.property('social.name', 'John Doe');
+        user.should.have.deep.property('social.email', 'john@example.com');
       });
   });
 
@@ -190,6 +190,6 @@ describe('google', () => {
       //locale: 'en'
     };
     userInfo = lodash.extend(userInfo, userOverrides);
-    stub.setResponse('userInfo', '/oauth2/v1/userInfo', userInfo);
+    stub.setResponse('userInfo', '/oauth2/v1/userinfo', userInfo);
   }
 });

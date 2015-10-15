@@ -1,29 +1,44 @@
 'use strict';
 
 var lodash = require('lodash');
+var User = require('../../lib/user.js');
+
+class SimpleUser extends User {
+  constructor(obj) {
+    super();
+    Object.assign(this, obj);
+  }
+
+  save() {
+    return Promise.resolve();
+  }
+}
 
 class UserStore {
   constructor() {
     this.users = [];
   }
 
-  addUser(auth, obj) {
+  addUser(obj) {
     // remove the user if it's already in the array
     this.removeUser(obj.id);
 
-    // if user contains a password; replace with the hashed version
+    var pw;
     if(obj.password) {
-      return auth.getHashedPassword(obj.password)
-        .then((hash) => {
-          // add user
-          obj.password = hash;
-          this.users.push(obj);
-        });
+      // remove password from obj (keep a temp copy)
+      pw = obj.password;
+      delete obj.password;
     }
 
-    // otherwise; probable social-login-only user... store info
-    this.users.push(obj);
-    return Promise.resolve();
+    var u = new SimpleUser(obj);
+    this.users.push(u);
+
+    // if user contains a password; replace with the hashed version
+    if(pw) {
+      return u.setPassword(pw);
+    } else {
+      return Promise.resolve();
+    }
   }
 
   removeUser(id) {
