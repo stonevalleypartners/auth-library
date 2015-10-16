@@ -26,6 +26,7 @@ describe('Local', () => {
     var opts = users.createAuthLibOpts();
     opts.log = log;
     opts.secret = 'testAuthLib';
+    opts.maxRefreshTokens = 0;
     auth = new AuthLib.Auth(opts);
     new AuthLib.Logins.local('local', auth);
     auth.initExpress(app);

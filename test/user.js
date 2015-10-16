@@ -28,7 +28,7 @@ describe('user', () => {
     u.should.have.property('foo', 'abc');
     u.should.have.property('bar', 123);
     u.should.have.property('auth');
-    u.auth.should.be.empty;
+    u.auth.should.deep.equal({refreshTokens: []});
     u.should.have.property('social');
     u.social.should.be.empty;
   });

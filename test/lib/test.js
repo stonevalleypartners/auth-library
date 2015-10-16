@@ -17,7 +17,7 @@ class Test {
 
     this.log = getLogger(name);
 
-    //this.users = new require('./simpleUserStore')();
+    this.users = new (require('./simpleUserStore'))();
   }
 
   createExpressServer() {
