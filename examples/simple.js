@@ -22,7 +22,6 @@ var opts = {
   secret: 'testAuthLib',
   lookupAccount: lookupAccount,
   updateTokens: lodash.noop,
-  updateAccount: lodash.noop,
 };
 var auth = new AuthLib.Auth(opts);
 new AuthLib.Logins.local('local', auth);

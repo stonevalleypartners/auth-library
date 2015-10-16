@@ -13,7 +13,6 @@ var opts = {
   log: log,
   lookupAccount: lodash.noop,
   updateTokens: lodash.noop,
-  updateAccount: lodash.noop,
 };
 var auth = new Auth(opts);
 

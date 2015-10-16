@@ -17,7 +17,6 @@ describe('proper usage', () => {
           log: test.log,
           lookupAccount: () => Promise.resolve({name: 'Jane Doe', id: 12345}),
           updateTokens: lodash.noop,
-          updateAccount: lodash.noop,
         };
         auth = new AuthLib.Auth(opts);
         local = new AuthLib.Logins.local('local', auth);
