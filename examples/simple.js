@@ -3,15 +3,18 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var lodash = require('lodash');
+var bunyan = require('bunyan');
+
+var log = bunyan.createLogger({name: 'simple'});
 
 //import AuthLib from './lib';
 var AuthLib = require('../lib');
 
 function lookupAccount() {
-  return Promise.resolve({
-    id: '11111',
-    password: '$2a$10$qZ0pb8FTfxBcRw.sWTsA6en1yH9y8Vf2N9n9eMrA210yqac6XVUKW',
-  });
+  var u = new AuthLib.User();
+  u.id = '11111';
+  u.setPassword('simple');
+  return Promise.resolve(u);
 }
 
 var app = express();
@@ -22,6 +25,7 @@ var opts = {
   secret: 'testAuthLib',
   lookupAccount: lookupAccount,
   updateTokens: lodash.noop,
+  log,
 };
 var auth = new AuthLib.Auth(opts);
 new AuthLib.Logins.local('local', auth);
