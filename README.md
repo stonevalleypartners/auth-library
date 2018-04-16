@@ -92,13 +92,13 @@ The intention is that the application manages most of the user information; but
 authentication needs some control to update information (coming from social applications)
 manage passwords (passwords must never be stored in a raw form... otherwise an attack
 from the server might expose passwords which is a very serious breach to the server),
-and find the user records for logins.
+find the user records for logins, and update refresh tokens used by a user.
 
 ### AuthLib.User.constructor()
 
 Constructs a new user object. This will include `auth` and `social` properties that are
 managed by the AuthLib library. All other parameters are the responsibliity of the
-application.
+application. It is important for the application to handle refresh tokens.
 
 Example:
 ```
@@ -139,3 +139,13 @@ Example:
 console.log(JSON.stringify(myuser)
 // results in {"social": {}, name: "Jane Doe"}
 ```
+
+### user.checkRefreshToken(token)
+
+This function must be impleted by the user object and is responsible for checking whether
+a refreshToken is associated with this object. Refresh tokens allow login access for the
+user and should be managed by the application (e.g. applications likely need to provide
+an API that allows users to logout and/or revoke access from particular devices). This
+function will be called for the particular user with the token value that is being
+provided for authentication. The application should determine if this is valid. Returns
+true (valid refresh token) or false (invalid).
