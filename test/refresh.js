@@ -31,6 +31,7 @@ describe('Refresh', () => {
     var opts = users.createAuthLibOpts();
     opts.log = log;
     opts.secret = authSecret;
+    opts.refreshDuration = 30;
     auth = new AuthLib.Auth(opts);
     new AuthLib.Logins.local('local', auth);
     auth.initExpress(app);
@@ -141,6 +142,36 @@ describe('Refresh', () => {
       })
       .catch(errors.StatusCodeError, (data) => {
         log.info({token: data}, 'attempted login with valid jwt but unknown refresh');
+        data.should.have.property('name', 'StatusCodeError');
+        data.should.have.property('statusCode', 401);
+        data.should.not.have.property('access_token');
+        data.should.not.have.property('refresh_token');
+      });
+  });
+
+  it('login with expired refresh token', () => {
+    var payload = {
+      id: 123,
+      exp: Math.floor(Date.now() / 1000) - 60, // expires 1 minute ago
+    };
+    var tokenOpts = {
+      algorithm: 'HS256',
+      issuer: 'testing',
+    };
+    var rt = jwt.sign(payload, authSecret, tokenOpts);
+    users.updateTokens({id: 123}, rt);
+
+    var reqOpts = {
+      uri: url + '/auth/local/token',
+      method: 'post',
+      json: {refresh_token: rt},
+    };
+    return request(reqOpts)
+      .then(() => {
+        throw new Error('login succeeded with expired refresh token');
+      })
+      .catch(errors.StatusCodeError, (data) => {
+        log.info({token: data}, 'attempted login with expired jwt');
         data.should.have.property('name', 'StatusCodeError');
         data.should.have.property('statusCode', 401);
         data.should.not.have.property('access_token');

@@ -49,6 +49,9 @@ tokens, etc.
   logs in with a social login to create a new user.
 * `tokenDuration`: integer defining how long the bearer tokens should last before expiry
   in seconds; by default this is 3600.
+* `refreshDuration`: integer defining how long the refresh tokens should last before
+  expiring (a new login will be required once the refresh tokens expire); by default this
+  is zero, which means no expiration applies.
 * `maxRefreshTokens`: number of refresh tokens to allow a client to use concurrently
   (typically a user will be using one refresh token for each unique browser or app
   they use to access the service). Default is 5; setting this to 0 will disallow
