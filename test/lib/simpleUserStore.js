@@ -7,6 +7,18 @@ class SimpleUser extends User {
   constructor(obj) {
     super();
     Object.assign(this, obj);
+    this.refreshTokens = [];
+  }
+
+  checkRefreshToken(token) {
+    var valid = false;
+    this.refreshTokens.forEach((rt) => {
+      if(rt === token) {
+        valid = true;
+      }
+    });
+
+    return valid;
   }
 
   save() {
@@ -49,6 +61,11 @@ class UserStore {
     return Promise.resolve(lodash.find(this.users, field));
   }
 
+  updateTokens(field, refresh) {
+    var u = lodash.find(this.users, field);
+    u.refreshTokens.push(refresh);
+  }
+
   registerExternalAccount(accountInfo) {
     var key = Object.keys(accountInfo)[0];
     var obj = {
@@ -64,7 +81,7 @@ class UserStore {
     return {
       lookupAccount: this.lookupAccount.bind(this),
       registerExternalAccount: this.registerExternalAccount.bind(this),
-      updateTokens: lodash.noop,
+      updateTokens: this.updateTokens.bind(this),
     };
   }
 }
