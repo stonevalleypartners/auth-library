@@ -150,5 +150,5 @@ a refreshToken is associated with this object. Refresh tokens allow login access
 user and should be managed by the application (e.g. applications likely need to provide
 an API that allows users to logout and/or revoke access from particular devices). This
 function will be called for the particular user with the token value that is being
-provided for authentication. The application should determine if this is valid. Returns
-true (valid refresh token) or false (invalid).
+provided for authentication. The application should determine if this is valid. Returns a
+promise that resolves to true (valid refresh token) or false (invalid).
