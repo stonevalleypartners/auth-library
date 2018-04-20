@@ -11,14 +11,18 @@ class SimpleUser extends User {
   }
 
   checkRefreshToken(token) {
-    var valid = false;
-    this.refreshTokens.forEach((rt) => {
-      if(rt === token) {
-        valid = true;
-      }
-    });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        var valid = false;
+        this.refreshTokens.forEach((rt) => {
+          if(rt === token) {
+            valid = true;
+          }
+        });
 
-    return valid;
+        resolve(valid);
+      }, 10);
+    });
   }
 
   save() {
