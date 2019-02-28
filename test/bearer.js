@@ -48,6 +48,10 @@ describe('bearer', () => {
     return Promise.all([setupServer, setupUser]);
   });
 
+  after(() => {
+    server.close();
+  });
+
   var bearer;
   it('login', () => {
     var reqOpts = {
@@ -70,7 +74,7 @@ describe('bearer', () => {
       .then((data) => {
         log.error({data: data}, 'private api response');
         var body = JSON.parse(data);
-        body.should.have.deep.property('user.id', 123);
+        body.should.have.nested.property('user.id', 123);
       });
   });
 

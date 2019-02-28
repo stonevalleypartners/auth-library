@@ -13,18 +13,25 @@ var getLogger = require('./lib/getLogger');
 var portFinder = require('svp-portfinder');
 var UserStore = require('./lib/simpleUserStore');
 
-describe('google', () => {
-  var app = express();
-  var server = http.createServer(app);
-  app.use(bodyParser.urlencoded({extended: true}));
-  app.use(bodyParser.json());
+describe.skip('google', () => {
+  var app;
+  var server;
 
   var auth, googleLogin, serviceUrl, stubUrl;
-  var log = getLogger('google');
-  var stub = new RestStub(log);
-  var users = new UserStore();
+  var log;
+  var stub;
+  var users;
 
   before(() => {
+    app = express();
+    server = http.createServer(app);
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.json());
+
+    log = getLogger('google');
+    stub = new RestStub(log);
+    users = new UserStore();
+
     return stub.start()
       .then((url) => {
         stubUrl = url;
@@ -60,6 +67,10 @@ describe('google', () => {
 
         return Promise.all([startServer, initUser]);
       });
+  });
+
+  after(() => {
+    server.close();
   });
 
   it('login existing google user', () => {

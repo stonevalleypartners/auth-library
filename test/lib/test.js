@@ -49,6 +49,10 @@ class Test {
       .then((url) => this.google.url = url);
   }
 
+  closeGoogleAuthStub() {
+    this.google.stub.stop();
+  }
+
   setGoogleAuthStubs(userId, issuedTo, userOverrides) {
     var tokenInfo = {
       audience: issuedTo,
