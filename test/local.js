@@ -144,7 +144,7 @@ describe('Local', () => {
       .then((data) => {
         log.debug({body: data}, 'login user with missing credentials');
         data.should.have.property('statusCode', 400);
-        data.should.have.deep.property('body.message', 'id or email field required');
+        data.should.have.nested.property('body.message', 'id or email field required');
       });
   });
 

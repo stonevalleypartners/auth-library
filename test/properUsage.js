@@ -27,7 +27,10 @@ describe('proper usage', () => {
       });
   });
 
-  after(() => test.closeExpressServer());
+  after(() => {
+    test.closeExpressServer();
+    test.closeGoogleAuthStub();
+  });
 
   it('local login fails', () => {
     var reqOpts = {
@@ -41,7 +44,7 @@ describe('proper usage', () => {
       .then((resp) => {
         test.log.debug({resp: resp}, 'usage; local login fails with bad user object');
         resp.statusCode.should.equal(401);
-        resp.should.have.deep.property('body.message', 'Unauthorized');
+        resp.should.have.nested.property('body.message', 'Unauthorized');
       });
   });
 
@@ -57,7 +60,7 @@ describe('proper usage', () => {
       .then((resp) => {
         test.log.debug({resp: resp}, 'usage; google login fails with bad user object');
         resp.statusCode.should.equal(401);
-        resp.should.have.deep.property('body.message', 'Unauthorized');
+        resp.should.have.nested.property('body.message', 'Unauthorized');
       });
   });
 });
