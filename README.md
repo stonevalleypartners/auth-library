@@ -56,6 +56,8 @@ tokens, etc.
   (typically a user will be using one refresh token for each unique browser or app
   they use to access the service). Default is 5; setting this to 0 will disallow
   returning refresh tokens to clients.
+* `getExtendedJWTFields`: an optional function that can provide additional fields to
+  include in the JWT access token (will be included in both access & refresh tokens)
 
 ### Auth.initExpress(app)
 
