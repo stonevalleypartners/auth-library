@@ -56,16 +56,17 @@ describe('custom token', () => {
     server.close();
   });
 
-  var bearer;
+  var bearer, refresh;
   it('login', () => {
     var reqOpts = {
       uri: url + '/auth/local/verify',
       method: 'post',
-      json: {id: 123, password: 'secret2'}
+      json: {id: 123, password: 'secret2', access_type: 'offline'}
     };
     return request(reqOpts)
       .then((data) => {
         bearer = data.access_token;
+        refresh = data.refresh_token;
       });
   });
 
@@ -81,5 +82,28 @@ describe('custom token', () => {
         body.should.have.nested.property('user.id', 123);
         body.should.have.nested.property('user.email', 'foo@svp.com');
       });
+  });
+
+  it('replace access_token using refresh token', () => {
+    var reqOpts = {
+      uri: url + '/auth/local/token',
+      method: 'post',
+      json: {refresh_token: refresh},
+    };
+    return request(reqOpts)
+      .then((data) => {
+        bearer = data.access_token;
+        var reqOpts = {
+          uri: url + '/private',
+          auth: {'bearer': bearer},
+        };
+        return request(reqOpts)
+          .then((data) => {
+            log.info({data: data}, 'response after using refresh token');
+            var body = JSON.parse(data);
+            body.should.have.nested.property('user.id', 123);
+            body.should.have.nested.property('user.email', 'foo@svp.com');
+          });
+        });
   });
 });
