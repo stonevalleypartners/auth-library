@@ -1,5 +1,6 @@
 {
   "node": true,
+  "esversion": 9,
   "mocha": true,
   "indent": 2,
   "newcap": true,
@@ -7,7 +8,6 @@
   "undef": true,
   "lastsemic": true,
   "eqeqeq": true,
-  "esnext": true,
   "expr": true,
   "asi": true,
   "unused": true,
