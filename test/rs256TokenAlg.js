@@ -20,6 +20,7 @@ describe('rs256', () => {
   app.use(bodyParser.json());
 
   var auth, url, log, users;
+  let refreshToken;
 
   before(async () => {
     log = getLogger('rs256');
@@ -111,5 +112,31 @@ describe('rs256', () => {
         data.should.have.property('body', 'Unauthorized');
         clock.uninstall();
       });
+  });
+
+  it('login user, request refresh token', async () => {
+    const reqOpts = {
+      uri: url + '/auth/local/verify',
+      method: 'post',
+      json: {id: 123, password: 'secret2', access_type: 'offline'},
+    };
+    const data = await request(reqOpts);
+    data.should.have.property('access_token');
+    data.should.have.property('refresh_token');
+    refreshToken = data.refresh_token;
+  });
+
+  it('can obtain access_token via refresh_token', async () => {
+    const reqOpts = {
+      uri: url + '/auth/local/token',
+      method: 'post',
+      json: {refresh_token: refreshToken},
+    };
+    const data = await request(reqOpts);
+    data.should.have.property('access_token');
+    data.should.have.property('token_type', 'bearer');
+    data.should.have.property('expires_in', 3600);
+    data.should.have.property('id', 123);
+    data.should.not.have.property('refresh_token');
   });
 });
