@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var request = require('request-promise');
 var lolex = require('lolex');
+var jwt = require('jsonwebtoken');
 
 const generateRSAKeys = require('./lib/generateRSA');
 var chai = require('chai');
@@ -124,6 +125,11 @@ describe('rs256', () => {
     data.should.have.property('access_token');
     data.should.have.property('refresh_token');
     refreshToken = data.refresh_token;
+
+    const refreshObject = jwt.verify(refreshToken, auth.opts.keys.public, ['RS256']);
+    refreshObject.should.have.property('iss', `${url}/auth/local`);
+    const accessObject = jwt.verify(data.access_token, auth.opts.keys.public, ['RS256']);
+    accessObject.should.have.property('iss', `${url}/auth/local`);
   });
 
   it('can obtain access_token via refresh_token', async () => {
@@ -138,5 +144,33 @@ describe('rs256', () => {
     data.should.have.property('expires_in', 3600);
     data.should.have.property('id', 123);
     data.should.not.have.property('refresh_token');
+  });
+
+  it('adds route for well known openID configuration', async () => {
+    const reqOpts = {
+      uri: url + '/auth/local/.well-known/openid-configuration',
+      json: true,
+    };
+    const data = await request(reqOpts);
+    data.should.have.property(
+      'jwks_uri',
+      url + '/auth/local/.well-known/jwks.json',
+    );
+  });
+
+  it('adds route for well known jwks', async () => {
+    const reqOpts = {
+      uri: url + '/auth/local/.well-known/jwks.json',
+      json: true,
+    };
+    const data = await request(reqOpts);
+    data.should.have.property('keys');
+    data.keys.should.be.an('array').that.has.lengthOf(1);
+    data.keys[0].should.have.property('kty', 'RSA');
+    data.keys[0].should.have.property('n');
+    data.keys[0].should.have.property('e');
+    data.keys[0].should.have.property('alg', 'RS256');
+    data.keys[0].should.have.property('use', 'sig');
+    data.keys[0].should.have.property('kid', auth.kid);
   });
 });
